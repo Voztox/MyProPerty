@@ -12,6 +12,38 @@
 </head>
 
 <body>
+    <header class="navbar navbar-expand-lg navbar-light bg-light">
+        <!-- Logo -->
+        <a class="navbar-brand" href="index.php">
+            <img src="../MyProPerty.png" alt="MyProPerty Logo" height="100" width = "100">
+        </a>
+
+        <!-- Navbar toggler (for responsive design) -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar items -->
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <!-- Links centered -->
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.php">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="search.php">Search</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="testimonial.php">Testimonial</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="contactus.php">Contact Us</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
     <?php
     // Include the database connection script
     require("../../mysql_connect.php");
@@ -54,8 +86,14 @@
 
     mysqli_close($conn);
     ?>
+
     <!-- Link to external JavaScript file -->
     <script src="script.js"></script>
+
+    <!-- Link to Bootstrap JS (required for dropdowns, toggles, etc.) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

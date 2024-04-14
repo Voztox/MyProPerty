@@ -1,3 +1,8 @@
+.navbar-nav .nav-link {
+    font-size: 1.875rem;
+    align-items: center;
+    text-align: center;
+}
 .feature-box {
     background-color: #f8f9fa;
     padding: 20px;
@@ -16,7 +21,7 @@
 /* Set max height for the box content */
 .box-content {
     overflow: hidden;
-    max-height: 200px; /* Adjust as needed */
+    max-height: 200px; 
 }
 
 .feature-box p {
@@ -24,7 +29,6 @@
     font-size: 1rem;
 }
 
-/* Style for images within feature boxes */
 .feature-box img {
     max-width: 100%;
     height: auto;
