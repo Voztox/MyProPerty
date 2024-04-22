@@ -15,7 +15,7 @@
     <header class="navbar navbar-expand-lg navbar-light bg-light">
         <!-- Logo -->
         <a class="navbar-brand" href="index.php">
-            <img src="../MyProPerty.png" alt="MyProPerty Logo" height="100" width = "100">
+            <img src="../MyProPerty.png" alt="MyProPerty Logo" height="100" width="100">
         </a>
 
         <!-- Navbar toggler (for responsive design) -->
@@ -44,12 +44,19 @@
         </div>
     </header>
 
-    <?php
-    // Include the database connection script
-    require("../../mysql_connect.php");
+<?php
+// Retrieve highlighted properties from cookies
+$highlightedProperties = isset($_COOKIE['highlighted_properties']) ? unserialize($_COOKIE['highlighted_properties']) : [];
 
-    // SQL query to fetch title, description, and image path for all properties
-    $sql = "SELECT propertyID, title, `desc`, image_path FROM property ";
+// Your existing code for database connection
+require("../../mysql_connect.php");
+
+if (!empty($highlightedProperties)) {
+    // Construct a comma-separated string of property IDs for the SQL query
+    $propertyIDs = implode(',', $highlightedProperties);
+
+    // SQL query to fetch title, description, and image path for selected properties
+    $sql = "SELECT propertyID, title, `desc`, image_path FROM property WHERE propertyID IN ($propertyIDs)";
     $result = mysqli_query($conn, $sql);
 
     if (mysqli_num_rows($result) > 0) {
@@ -83,9 +90,14 @@
     } else {
         echo "No properties found";
     }
+} else {
+    echo "No properties selected";
+}
 
-    mysqli_close($conn);
-    ?>
+mysqli_close($conn);
+?>
+
+    <!-- Your existing HTML content -->
 
     <!-- Link to external JavaScript file -->
     <script src="script.js"></script>
