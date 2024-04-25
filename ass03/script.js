@@ -1,15 +1,18 @@
-// Script to handle expanding feature boxes
-document.addEventListener('DOMContentLoaded', function () {
-    const boxes = document.querySelectorAll('.box-content');
-    boxes.forEach(box => {
-        // Add expand button
-        const expandBtn = document.createElement('button');
-        expandBtn.textContent = 'Click for more';
-        expandBtn.classList.add('btn', 'btn-primary', 'btn-sm', 'mt-2', 'expand-btn');
-        expandBtn.addEventListener('click', function () {
-            box.style.maxHeight = 'none';
-            this.style.display = 'none';
-        });
-        box.parentNode.querySelector('.feature-box').appendChild(expandBtn);
+$(document).ready(function() {
+    // Initialize draggable behavior for filters
+    $(".filter").draggable({
+        revert: "invalid",
+        helper: "clone"
+    });
+
+    // Initialize droppable behavior for filter container
+    $("#filterContainer").droppable({
+        accept: ".filter",
+        drop: function(event, ui) {
+            // Append dropped filter to container
+            $(this).append(ui.helper.clone());
+            // Apply filter logic here
+            // This is where you would update the property search based on the selected filters
+        }
     });
 });
