@@ -88,3 +88,15 @@
     margin-bottom: 0;
     padding-bottom: 0;
 }
+.container-fluid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.btn-search {
+    width: 200px;
+    height: 200px;
+    font-size: 24px;
+    border-radius: 20px;
+}
