@@ -1,102 +1,16 @@
-.navbar-nav .nav-link {
-    font-size: 1.875rem;
-    align-items: center;
-    text-align: center;
+/* styles.css */
+
+/* Positioning the advertisement */
+.advertisement {
+    position: fixed; /* Fixed position to keep it in view */
+    top: 50%; /* Adjust top position */
+    right: 20px; /* Adjust right position */
+    transform: translateY(-50%); /* Center vertically */
+    z-index: 1000; /* Ensure it's above other content */
 }
 
-/* Styling for filters */
-.list-group-item {
-    font-size: 1.25rem;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-}
-
-.container-sm {
-    max-width: 576px;
-}
-
-.form-label {
-    font-size: 1.25rem;
-}
-
-.form-control {
-    font-size: 1rem;
-    border-radius: 5px;
-    padding: 0.5rem 1rem;
-    margin-bottom: 1rem;
-}
-
-.btn {
-    font-size: 1.25rem;
-    margin-right: 0.5rem;
-}
-
-.feature-box {
-    background-color: #f8f9fa;
-    padding: 20px;
-    margin-bottom: 20px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.feature-box h3 {
-    color: #007bff;
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-}
-
-/* Set max height for the box content */
-.box-content {
-    overflow: hidden;
-    max-height: 200px; 
-}
-
-.feature-box p {
-    color: #343a40;
-    font-size: 1rem;
-}
-
-.feature-box img {
-    max-width: 100%;
-    height: auto;
-}
-
-/* Style for expand button */
-.expand-btn {
-    display: none; /* Hide button initially */
-    margin-top: 10px;
-}
-/* Styling for draggable filters */
-.filter {
-    display: inline-block;
-    padding: 5px 10px;
-    margin: 5px;
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 5px;
-    cursor: move;
-}
-.property-entry {
-    border-bottom: 1px solid #dee2e6;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-}
-.property-entry:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
-}
-.container-fluid {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-.btn-search {
-    width: 200px;
-    height: 200px;
-    font-size: 24px;
-    border-radius: 20px;
+/* Adjusting the size of the advertisement */
+.advertisement img {
+    width: 200px; /* Adjust width as needed */
+    height: auto; /* Maintain aspect ratio */
 }

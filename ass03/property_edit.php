@@ -11,7 +11,9 @@
 <body>
 
     <?php
-    require("../../mysql_connect.php");
+    require_once('myProPerty_session.php');
+    require_once('myProPerty_header.php');
+    require_once('adverts.php');
     function validate($value)
     {
         $value = htmlspecialchars($value);

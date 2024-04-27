@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Property Search</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
 <?php
-require("../../mysql_connect.php");
+require_once('myProPerty_session.php');
+require_once('myProPerty_header.php');
+require_once('adverts.php');
 
 // Function to sanitize user input
 function validate($value)
@@ -17,53 +18,67 @@ function validate($value)
     return htmlspecialchars($value);
 }
 
-// Price Filtering
-if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['price'])) {
-    // Get and validate filter values
-    $price = validate($_GET['price']);
+// Initialize properties array
+$properties = [];
 
-    // Prepare and execute SQL query with price filtering condition
-    $sql = "SELECT * FROM property WHERE price <= ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("d", $price);
-    $stmt->execute();
-    $result = $stmt->get_result();
+// Check if the form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // Price Filtering
+    if (isset($_GET['price'])) {
+        // Get and validate filter value
+        $price = validate($_GET['price']);
 
-    if ($result->num_rows > 0) {
-        // Store filtered property information
-        $properties = [];
-        while ($row = $result->fetch_assoc()) {
-            $properties[] = $row;
+        // Prepare and execute SQL query with price filtering condition
+        $sql = "SELECT * FROM property WHERE price <= ?";
+        $stmt = $conn->prepare($sql);
+        
+        if ($stmt) {
+            $stmt->bind_param("d", $price);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    $properties[] = $row;
+                }
+            } else {
+                echo "Error executing query: " . $stmt->error;
+            }
+            
+            $stmt->close();
+        } else {
+            echo "Error preparing statement: " . $conn->error;
         }
-    } else {
-        $noPropertyFound = true;
     }
-    $stmt->close();
-}
 
-// Date Filtering
-if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['from_date']) && isset($_GET['to_date'])) {
-    // Get and validate filter values
-    $from_date = validate($_GET['from_date']);
-    $to_date = validate($_GET['to_date']);
+    // Date Filtering
+    if (isset($_GET['from_date']) && isset($_GET['to_date'])) {
+        // Get and validate filter values
+        $from_date = validate($_GET['from_date']);
+        $to_date = validate($_GET['to_date']);
 
-    // Prepare and execute SQL query with date filtering condition
-    $sql = "SELECT * FROM property WHERE contractStart BETWEEN ? AND ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $from_date, $to_date);
-    $stmt->execute();
-    $result = $stmt->get_result();
+        // Prepare and execute SQL query with date filtering condition
+        $sql = "SELECT * FROM property WHERE contractStart BETWEEN ? AND ?";
+        $stmt = $conn->prepare($sql);
+        
+        if ($stmt) {
+            $stmt->bind_param("ss", $from_date, $to_date);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        // Store filtered property information
-        $properties = [];
-        while ($row = $result->fetch_assoc()) {
-            $properties[] = $row;
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    $properties[] = $row;
+                }
+            } else {
+                echo "Error executing query: " . $stmt->error;
+            }
+            
+            $stmt->close();
+        } else {
+            echo "Error preparing statement: " . $conn->error;
         }
-    } else {
-        $noPropertyFound = true;
     }
-    $stmt->close();
 }
 ?>
 
@@ -97,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['from_date']) && isset($_
     </div>
 </div>
 
-<?php if (isset($properties) && !empty($properties)) : ?>
+<?php if (!empty($properties)) : ?>
     <div class='container col-lg-8 card p-3 mb-3'>
         <div class="row row-cols-2">
             <?php foreach ($properties as $key => $property) : ?>

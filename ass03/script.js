@@ -1,18 +1,15 @@
-$(document).ready(function() {
-    // Initialize draggable behavior for filters
-    $(".filter").draggable({
-        revert: "invalid",
-        helper: "clone"
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    var ads = document.querySelectorAll('.advert');
+    var currentIndex = 0;
 
-    // Initialize droppable behavior for filter container
-    $("#filterContainer").droppable({
-        accept: ".filter",
-        drop: function(event, ui) {
-            // Append dropped filter to container
-            $(this).append(ui.helper.clone());
-            // Apply filter logic here
-            // This is where you would update the property search based on the selected filters
-        }
-    });
+    setInterval(function() {
+        // Hide the current ad
+        ads[currentIndex].style.display = 'none';
+
+        // Move to the next ad
+        currentIndex = (currentIndex + 1) % ads.length;
+
+        // Show the next ad
+        ads[currentIndex].style.display = 'block';
+    }, 5000); // Switch ads every 5 seconds
 });
