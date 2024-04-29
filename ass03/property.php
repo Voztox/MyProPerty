@@ -22,13 +22,28 @@
                 <th>CustomerId</th>
                 <th>Desc</th>
                 <th>Title</th>
+                <th>Image Path</th>
             </tr>
         </thead>
         <tbody>
             <?php
+            // Define database connection constants
+            define('DB_HOST', 'localhost');
+            define('DB_USER', 'root');
+            define('DB_PASSWORD', '');
+            define('DB_DATABASE', 's3105875');
+            
+            // Establish a new database connection
+            $conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
+            
+            // Check connection
+            if ($conn->connect_error) {
+                die("Database connection failed: " . $conn->connect_error);
+            }
+            
+            // Include necessary files
             require_once('myProPerty_session.php');
             require_once('myProPerty_header.php');
-            require_once('adverts.php');
             $sql = "SELECT * FROM property";
             $result = $conn->query($sql);
 
@@ -47,8 +62,9 @@
                     echo "<td>" . $row['contractStart'] . "</td>";
                     echo "<td>" . $row['contractEnd'] . "</td>";
                     echo "<td>" . $row['customerID'] . "</td>";
-                    echo "<td>" . $row['desc'] . "</td>";
+                    echo "<td>" . $row['description'] . "</td>";
                     echo "<td>" . $row['title'] . "</td>";
+                    echo "<td>" . $row['image_path'] . "</td>";
                     echo "</tr>";
                 }
             } else {

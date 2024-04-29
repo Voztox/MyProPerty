@@ -1,163 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Inventory Item</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Add Inventory</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel = "stylesheet" href = "styles.css">
 </head>
+
 <body>
-<?php
-
-
+    <?php
 require_once('myProPerty_session.php');
-require_once('myProPerty_header.php');
+require_once('myProPerty_header_user.php');
 require_once('adverts.php');
+    ?>
+    <div class="container">
+        <h1 class="my-4">Add Inventory</h1>
+        <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+            <div class="mb-3">
+                <label for="propertyID" class="form-label">Property ID</label>
+                <input type="text" name="propertyID" class="form-control" id="propertyID" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-check-label">Inventory Items:</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="electricity" id="electricity">
+                    <label class="form-check-label" for="electricity">Electricity</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="internet" id="internet">
+                    <label class="form-check-label" for="internet">Internet</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="oven" id="oven">
+                    <label class="form-check-label" for="oven">Oven</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="TV" id="TV">
+                    <label class="form-check-label" for="TV">TV</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="heater" id="heater">
+                    <label class="form-check-label" for="heater">Heater</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="bills" id="bills">
+                    <label class="form-check-label" for="bills">Bills</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="washingMachine" id="washingMachine">
+                    <label class="form-check-label" for="washingMachine">Washing Machine</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="dryingMachine" id="dryingMachine">
+                    <label class="form-check-label" for="dryingMachine">Drying Machine</label>
+                </div>
+                <!-- Add more checkboxes for other inventory items -->
+            </div>
+            <button type="submit" name="submit" class="btn btn-primary">Add Inventory</button>
+        </form>
+    </div>
 
-// Function to sanitize user input
-function validate($value)
-{
-    return htmlspecialchars($value);
-}
+    <?php
+    
 
-// Function to echo sticky form value
-function stickyValue($value)
-{
-    echo (isset($_POST[strval($value)]) ? $_POST[strval($value)] : "");
-}
+    // Check if the form is submitted
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+        // Get input data
+        $propertyID = $_POST['propertyID'];
+        $electricity = isset($_POST['electricity']) ? 1 : 0;
+        $internet = isset($_POST['internet']) ? 1 : 0;
+        $oven = isset($_POST['oven']) ? 1 : 0;
+        $TV = isset($_POST['TV']) ? 1 : 0;
+        $heater = isset($_POST['heater']) ? 1 : 0;
+        $bills = isset($_POST['bills']) ? 1 : 0;
+        $washingMachine = isset($_POST['washingMachine']) ? 1 : 0;
+        $dryingMachine = isset($_POST['dryingMachine']) ? 1 : 0;
+        // Add more variables for other inventory items
 
-$errors = [];
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['search'])) {
-    $propertyID = isset($_POST['propertyID']) ? validate($_POST['propertyID']) : null;
-
-    // Prepare and execute the SQL query
-    $stmt = $conn->prepare("SELECT * FROM inventory WHERE propertyID = ?");
-    if (!$stmt) {
-        die("Error preparing SQL query: " . $conn->error);
-    }
-
-    // Bind parameter and execute query
-    $stmt->bind_param("i", $propertyID);
-    if (!$stmt->execute()) {
-        die("Error executing SQL query: " . $stmt->error);
-    }
-
-    // Get result set
-    $result = $stmt->get_result();
-
-    // Check if any rows are returned
-    if ($result->num_rows > 0) {
-        // Inventory items found, display them
-        echo "<div class='container'>";
-        echo "<h2 class='mt-5'>Inventory Items</h2>";
-        echo "<table class='table table-striped'>";
-        echo "<thead><tr><th>Inventory ID</th><th>Property ID</th><th>Attributes</th></tr></thead>";
-        echo "<tbody>";
-        while ($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>" . $row['inventoryID'] . "</td>";
-            echo "<td>" . $row['propertyID'] . "</td>";
-            echo "<td>";
-            echo "<ul>";
-            foreach ($row as $key => $value) {
-                if ($key !== 'inventoryID' && $key !== 'propertyID') {
-                    echo "<li>$key: " . ($value ? 'Yes' : 'No') . "</li>";
-                }
-            }
-            echo "</ul>";
-            echo "</td>";
-            echo "</tr>";
+        // Prepare and execute the SQL query
+        $stmt = $conn->prepare("INSERT INTO inventory (propertyID, electricity, internet, oven, TV, heater, bills, washingMachine, dryingMachine) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("iiiiiiiii", $propertyID, $electricity, $internet, $oven, $TV, $heater, $bills, $washingMachine, $dryingMachine);
+        if ($stmt->execute()) {
+            echo '<div class="container mt-3"><div class="alert alert-success" role="alert">Inventory added successfully.</div></div>';
+        } else {
+            echo '<div class="container mt-3"><div class="alert alert-danger" role="alert">Error adding inventory.</div></div>';
         }
-        echo "</tbody>";
-        echo "</table>";
-        echo "</div>";
-    } else {
-        // No inventory items found
-        echo "<div class='alert alert-warning mt-5' role='alert'>No inventory items found for the given property ID.</div>";
+        $stmt->close();
     }
-
-    // Close prepared statement
-    $stmt->close();
-}
-?>
-<div class="container dashboard-container">
-    <h1 class="text-center">Search Property and View Inventory</h1>
-    <!-- Filtering Form -->
-    <div class="container container-sm">
-        <div class="row justify-content-center">
-            <form class="container col-sm-8 col-lg-8 my-5" method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" novalidate>
-                <div class="mb-3">
-                    <label for="propertyID" class="form-label">Property ID</label>
-                    <input type="text" name="propertyID" id="propertyID" class="form-control" placeholder="Property ID" value="<?php stickyValue('propertyID'); ?>">
-                </div>
-                <button type="submit" name="search" class="btn btn-primary">Search</button>
-            </form>
-        </div>
-    </div>
-</div>
-
-<?php if (isset($inventoryItems) && !empty($inventoryItems)) : ?>
-    <div class='container col-lg-8 card p-3 mb-3'>
-        <h2 class="text-center">Inventory Items</h2>
-        <div class="row row-cols-2">
-            <?php foreach ($inventoryItems as $key => $item) : ?>
-                <?php if ($key % 2 == 0) : ?>
-                    </div>
-                    <div class="row row-cols-2">
-                <?php endif; ?>
-                <div class="col">
-                    <div class="property-entry">
-                        <table class='table table-striped' style='width:100%'>
-                            <tbody>
-                                <tr>
-                                    <th scope='col'>Inventory ID</th>
-                                    <td scope='row'><?php echo $item['inventoryID']; ?></td>
-                                </tr>
-                                <tr>
-                                    <th scope='col'>Electricity</th>
-                                    <td scope='row'><?php echo $item['electricity'] ? 'Yes' : 'No'; ?></td>
-                                </tr>
-                                <tr>
-                                    <th scope='col'>Internet</th>
-                                    <td scope='row'><?php echo $item['internet'] ? 'Yes' : 'No'; ?></td>
-                                </tr>
-                                <tr>
-                                    <th scope='col'>Oven</th>
-                                    <td scope='row'><?php echo $item['oven'] ? 'Yes' : 'No'; ?></td>
-                                </tr>
-                                <tr>
-                                    <th scope='col'>TV</th>
-                                    <td scope='row'><?php echo $item['TV'] ? 'Yes' : 'No'; ?></td>
-                                </tr>
-                                <tr>
-                                    <th scope='col'>Heater</th>
-                                    <td scope='row'><?php echo $item['heater'] ? 'Yes' : 'No'; ?></td>
-                                </tr>
-                                <tr>
-                                    <th scope='col'>Bills</th>
-                                    <td scope='row'><?php echo $item['bills'] ? 'Yes' : 'No'; ?></td>
-                                </tr>
-                                <tr>
-                                    <th scope='col'>Washing Machine</th>
-                                    <td scope='row'><?php echo $item['washingMachine'] ? 'Yes' : 'No'; ?></td>
-                                </tr>
-                                <tr>
-                                    <th scope='col'>Drying Machine</th>
-                                    <td scope='row'><?php echo $item['dryingMachine'] ? 'Yes' : 'No'; ?></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-<?php elseif (isset($inventoryItems) && empty($inventoryItems)) : ?>
-    <div class='alert alert-warning' role='alert'>
-        <?php echo $errors[0]; ?>
-    </div>
-<?php endif; ?>
-
+    require_once('footer.php');
+    ?>
 </body>
+
 </html>

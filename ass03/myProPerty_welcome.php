@@ -1,7 +1,7 @@
 <?php
 // start the session 
 session_start();
-require_once('myProPerty_header.php');
+require_once('myProPerty_header_user.php');
 
    //COMMENT THIS redirect link for now,to test everything.
    //may not need this code as user can use site without having to login

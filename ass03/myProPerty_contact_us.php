@@ -7,12 +7,26 @@
     <title>Contact Form</title>
          <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel = "stylesheet" href = "styles.css">
 </head>
 <body>
     <?php
+    define('DB_HOST', 'localhost');
+    define('DB_USER', 'root');
+    define('DB_PASSWORD', '');
+    define('DB_DATABASE', 's3105875');
+    
+    // Establish a new database connection
+    $db_connection = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
+    
+    // Check connection
+    if ($db_connection->connect_error) {
+        die("Database connection failed: " . $db_connection->connect_error);
+    }
+
+    
     require_once('myProPerty_session.php');
     require_once('myProPerty_header.php');
-    require_once('adverts.php');
 
 //vairables:
 $error = '';
@@ -48,18 +62,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])){
     else {
         //inset into database if required field is not empty
         if(!empty($tenant_email) && !empty($landlord_email) && !empty($message)){
-            $sql = $db_connection->prepare("INSERT INTO queries (tenant_email, landlord_email, message) VALUES (?, ?, ?);");
-            $sql->bind_param("sss",$tenant_email, $landlord_email, $message);
-             //execute the bind query in result variable:
-            $result = $sql->execute();
-            var_dump($result); // for debugging
-        
-        if ($result) {
-            $success .= '<p class="alert alert-success" "style="text-align: center !important;">Sent!!</p>';
-        } 
-        else {
-            $error .= '<p class="error">Something went wrong: '.$sql->error.'</p>';
-        }
+            // Prepare the SQL statement
+$sql = $db_connection->prepare("INSERT INTO queries (tenant_email, landlord_email, message) VALUES (?, ?, ?);");
+
+if ($sql === false) {
+    // Handle the error if prepare() fails
+    die("Error preparing statement: " . $db_connection->error);
+}
+
+// Bind parameters to the statement
+$sql->bind_param("sss", $tenant_email, $landlord_email, $message);
+
+// Execute the statement
+$result = $sql->execute();
+
+if ($result === false) {
+    // Handle the error if execute() fails
+    die("Error executing statement: " . $sql->error);
+}
+
 
     }//else if not empty
 
@@ -141,5 +162,5 @@ function display_contact_error($error){
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-
+<?php require_once('footer.php'); ?>
 </html>

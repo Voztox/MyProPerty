@@ -4,16 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Propert Edit</title>
+    <title>Property Edit</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel = "stylesheet" href = "styles.css">
 </head>
 
 <body>
 
     <?php
+
+    // Include necessary files
     require_once('myProPerty_session.php');
-    require_once('myProPerty_header.php');
+    require_once('myProPerty_header_user.php');
     require_once('adverts.php');
+
+
     function validate($value)
     {
         $value = htmlspecialchars($value);
@@ -27,7 +32,7 @@
     }
 
     //setting variables
-    $bedAmount = $price  = $area  = $lengthOfTenancy = $contractStart = $contractEnd = $customerID = $desc = $title = "";
+    $bedAmount = $price  = $area  = $lengthOfTenancy = $contractStart = $contractEnd = $customerID = $description = $title = "";
     $errors = [];
 
     //click search
@@ -35,8 +40,8 @@
         $propertyID = validate($_POST['propertyID']);
 
         // getting information
-        $stmt = $db_connection->prepare("SELECT * FROM property WHERE propertyID=?");
-        $stmt->bind_param("i", $propertyID);
+        $stmt = $conn->prepare("SELECT * FROM property WHERE propertyID=?");
+        $stmt->bind_param("s", $propertyID);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
@@ -48,7 +53,7 @@
             $lengthOfTenancy = $info['lengthOfTenancy'];
             $contractStart = $info['contractStart'];
             $contractEnd = $info['contractEnd'];
-            $desc = $info['desc'];
+            $description = $info['description'];
             $title = $info['title'];
         } else {
             echo "<div class='alert alert-warning' role='alert'>
@@ -68,104 +73,77 @@
         $lengthOfTenancy = validate($_POST['lengthOfTenancy']);
         $contractStart = validate($_POST['contractStart']);
         $contractEnd = validate($_POST['contractEnd']);
-        $desc = validate($_POST['desc']);
+        $description = validate($_POST['description']);
         $title = validate($_POST['title']);
 
         // File upload handling
-        $targetDir = "../images/";
-        $fileName = basename($_FILES["image"]["name"]);
-        $targetFilePath = $targetDir . $fileName;
-        $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
+        if (!empty($_FILES["image"]["tmp_name"])) {
+            $targetDir = "../images/";
+            $fileName = basename($_FILES["image"]["name"]);
+            $targetFilePath = $targetDir . $fileName;
+            $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
 
-        //validations 
-        if (empty($propertyID) || !isset($propertyID)) {
-            $errors[] = "Please fill the property id field";
-        } else if (!(preg_match('/^\d+$/', $propertyID))) {
-            $errors[] = "Property id should be number";
-        }
+            // Check if image file is a actual image or fake image
+            $check = getimagesize($_FILES["image"]["tmp_name"]);
+            if ($check !== false) {
+                $uploadOk = 1;
+            } else {
+                $errors[] = "File is not an image.";
+                $uploadOk = 0;
+            }
 
-        if (empty($bedAmount) || !isset($bedAmount)) {
-            $errors[] = "Please fill the bed amount field";
-        } else if (!(preg_match('/^\d+$/', $bedAmount))) {
-            $errors[] = "bed count should be number";
-        }
+            // Check if file already exists
+            if (file_exists($targetFilePath)) {
+                $errors[] = "Sorry, file already exists.";
+                $uploadOk = 0;
+            }
 
-        if (empty($price) || !isset($price)) {
-            $errors[] = "Please fill the price field";
-        } else if (!(preg_match('/^\$?\d+(\.\d{1,2})?$/', $price))) {
-            $errors[] = "price should be a number";
-        }
+            // Check file size
+            if ($_FILES["image"]["size"] > 5000000) {
+                $errors[] = "Sorry, your file is too large.";
+                $uploadOk = 0;
+            }
 
-        if (empty($area) || !isset($area)) {
-            $errors[] = "Please fill the area field";
-        }
+            // Allow certain file formats
+            if ($fileType != "jpg" && $fileType != "png" && $fileType != "jpeg" && $fileType != "gif") {
+                $errors[] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+                $uploadOk = 0;
+            }
 
-        if (empty($lengthOfTenancy) || !isset($lengthOfTenancy)) {
-            $errors[] = "Please fill the length Of Tenancy field";
-        }
-
-        if (empty($contractStart) || !isset($contractStart)) {
-            $errors[] = "Please fill the contract Start date field";
-        }
-
-        if (empty($contractEnd) || !isset($contractEnd)) {
-            $errors[] = "Please fill the contract End date field";
-        }
-
-        if (empty($desc) || !isset($desc)) {
-            $errors[] = "Please fill the desc(description) field";
-        }
-        if (empty($title) || !isset($title)) {
-            $errors[] = "Please fill the title field";
-        }
-
-        // Check if image file is a actual image or fake image
-        $check = getimagesize($_FILES["image"]["tmp_name"]);
-        if ($check !== false) {
-            $uploadOk = 1;
-        } else {
-            $errors[] = "File is not an image.";
-            $uploadOk = 0;
-        }
-
-        // Check if file already exists
-        if (file_exists($targetFilePath)) {
-            $errors[] = "Sorry, file already exists.";
-            $uploadOk = 0;
-        }
-
-        // Check file size
-        if ($_FILES["image"]["size"] > 5000000) {
-            $errors[] = "Sorry, your file is too large.";
-            $uploadOk = 0;
-        }
-
-        // Allow certain file formats
-        if ($fileType != "jpg" && $fileType != "png" && $fileType != "jpeg" && $fileType != "gif") {
-            $errors[] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-            $uploadOk = 0;
-        }
-
-        // Check if $uploadOk is set to 0 by an error
-        if ($uploadOk == 0) {
-            $errors[] = "Sorry, your file was not uploaded.";
-            // if everything is ok, try to upload file
-        } else {
-            if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFilePath)) {
-                $stmt = $conn->prepare("UPDATE property SET bedAmount=?, price=?, area=?, lengthOfTenancy=?, contractStart=?, contractEnd=?, `desc`=?, title=?, image_path=?  WHERE propertyID=?");
-                $stmt->bind_param("sssssssssi", $bedAmount, $price, $area, $lengthOfTenancy, $contractStart, $contractEnd, $desc, $title, $targetFilePath, $propertyID);
-                if ($stmt->execute()) {
-                    echo "<div class='alert alert-success' role='alert'>
-                    Property Updated.
-                   </div>";
+            // Check if $uploadOk is set to 0 by an error
+            if ($uploadOk == 0) {
+                $errors[] = "Sorry, your file was not uploaded.";
+                // if everything is ok, try to upload file
+            } else {
+                if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFilePath)) {
+                    $stmt = $conn->prepare("UPDATE property SET bedAmount=?, price=?, area=?, lengthOfTenancy=?, contractStart=?, contractEnd=?, description=?, title=?, image_path=?  WHERE propertyID=?");
+                    $stmt->bind_param("sssssssssi", $bedAmount, $price, $area, $lengthOfTenancy, $contractStart, $contractEnd, $description, $title, $targetFilePath, $propertyID);
+                    if ($stmt->execute()) {
+                        echo "<div class='alert alert-success' role='alert'>
+                        Property Updated.
+                       </div>";
+                    } else {
+                        echo "<div class='alert alert-danger' role='alert'>
+                       Unable to update.
+                       </div>";
+                    }
                 } else {
                     echo "<div class='alert alert-danger' role='alert'>
-                   Unable to update.
+                   Sorry, there was an error uploading your file.
                    </div>";
                 }
+            }
+        } else {
+            // No file uploaded
+            $stmt = $conn->prepare("UPDATE property SET bedAmount=?, price=?, area=?, lengthOfTenancy=?, contractStart=?, contractEnd=?, `description`=?, title=? WHERE propertyID=?");
+            $stmt->bind_param("ssssssssi", $bedAmount, $price, $area, $lengthOfTenancy, $contractStart, $contractEnd, $description, $title, $propertyID);
+            if ($stmt->execute()) {
+                echo "<div class='alert alert-success' role='alert'>
+                Property Updated.
+               </div>";
             } else {
                 echo "<div class='alert alert-danger' role='alert'>
-               Sorry, there was an error uploading your file.
+               Unable to update.
                </div>";
             }
         }
@@ -218,8 +196,8 @@
                         <input type="date" name="contractEnd" class="form-control" value="<?php echo $contractEnd; ?>">
                     </div>
                     <div class="mb-3">
-                        <label for="desc" class="form-label">Description</label>
-                        <input type="text" name="desc" class="form-control" value="<?php echo $desc; ?>">
+                        <label for="description" class="form-label">Description</label>
+                        <input type="text" name="description" class="form-control" value="<?php echo $description; ?>">
                     </div>
                     <div class="mb-3">
                         <label for="title" class="form-label">Title</label>
@@ -237,6 +215,7 @@
     </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <?php require_once('footer.php'); ?>
 </body>
 
 </html>

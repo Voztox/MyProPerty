@@ -1,0 +1,58 @@
+.list-group-item {
+    font-size: 1.25rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+}
+
+.container-sm {
+    max-width: 576px;
+}
+
+.form-label {
+    font-size: 1.25rem;
+}
+
+.form-control {
+    font-size: 1rem;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.btn {
+    font-size: 1.25rem;
+    margin-right: 0.5rem;
+}
+
+.feature-box {
+    background-color: #f8f9fa;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.feature-box h3 {
+    color: #007bff;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+/* Set max height for the box content */
+.box-content {
+    overflow: hidden;
+    max-height: 200px;
+}
+
+.feature-box p {
+    color: #343a40;
+    font-size: 1rem;
+}
+
+.feature-box img {
+    width: 100%;
+    height: auto;
+    max-height: 250px; /* Set the maximum height for the images */
+}

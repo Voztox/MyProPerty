@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>myProPerty Header</title>
+    <title>myProPerty Header for User</title>
     <!-- Boostrap css Link  -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   </head>
@@ -19,7 +19,7 @@
     
        <a class="navbar-brand mb-0 h1" href="index.php">
     <img src="../MyProPerty.png" class="d-inline-block align-text-center" alt="myProPerty House Logo" width="40" height="40"> myProPerty
-      </a>
+       </a>
 
 
  
@@ -46,7 +46,7 @@
             </li>
             <li class="nav-item">
               <a class="nav-link active" aria-current="contect_us" href="myProPerty_contact_us.php">Contact Us</a>
-
+            </li>
 
              <!-- Login Dropdown -->
        
@@ -57,43 +57,88 @@
               
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 <li>
-                  <a class="dropdown-item" href="myProPerty_login.php">Login</a>
-                </li>
-                <li>
-                  <hr class="dropdown-divide">
-                </li>
-                <li>
-                  <a class="dropdown-item" href="myProPerty_registration_form.php">Register</a>
-                </li>
-                <li>
-                  <hr class="dropdown-divide">
-                </li>
-                <li>
                   <a class="dropdown-item" href="myProPerty_view_email.php">Email</a>
                 </li>
+                <li>
+                  <hr class="dropdown-divide">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="myProPerty_reset_pass.php">Reset Password</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divide">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="myProPerty_logout.php">Logout</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divide">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="index_edit.php">Edit main page</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divide">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="property_add.php">Add Property</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divide">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="property_edit.php">Property edit</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divide">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="testimonialAdd.php">Add testimonial</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divide">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="testimonialManage.php">Edit testimonial</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divide">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="Tenancy.php">Tenancy</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divide">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="Tenancyedit.php">Edit tenancy</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divide">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="landlord.php">Add landlord</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divide">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="landlordEdit.php">Edit landlord</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divide">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="inventory_add.php">Add inventory</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divide">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="inventory_edit.php">Edit inventory</a>
+                </li>
 
-
-                <!-- <?php if (isset($_SESSION['user_ID'])): ?> -->
-            
-                  <!-- Dropdown for logged-in users -->
-           
-                  <!-- <ul class="navbar-nav">
-                
-                  <li class="nav-item dropdown">
-                    
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        My Account
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Email</a>
-                        <a class="dropdown-item" href="#">Reset Password</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Logout</a>
-                    </div>
-                     </li>
-                   </ul>
-            <?php endif; ?> -->
-
+               
                 <!-- dropdown menu for login -->
               </ul>
             </li>

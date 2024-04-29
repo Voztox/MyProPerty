@@ -7,17 +7,27 @@
     <title>myProPerty Login Form</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+    <link rel = "stylesheet" href = "styles.css">
 </head>
 
 <body>
 
-<?php
+    <?php
+    // Define database connection constants
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASSWORD', '');
+define('DB_DATABASE', 's3105875');
 
-require_once('myProPerty_session.php');
-require_once('myProPerty_header.php');
-require_once('adverts.php');
+// Establish a new database connection
+$db_connection = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
 
+// Check connection
+if ($db_connection->connect_error) {
+    die("Database connection failed: " . $db_connection->connect_error);
+}
+    require_once ("myProPerty_session.php");
+    require_once ('myProPerty_header.php');
 
     //vairables:
     $error ='';
@@ -29,6 +39,7 @@ require_once('adverts.php');
             //initialize and trim variables
             $email = trim($_POST['email']);
             $password = trim($_POST['password']);
+             $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
 
             //validating if input is empty::::::::::
@@ -68,16 +79,19 @@ require_once('adverts.php');
                             //Verify the given input with data from database::::::
                                 // verify the password
                                 if (password_verify($password, $row['password'])) {
+                                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                                     $_SESSION["userID"] = $row['userID'];
                                     $_SESSION["tenants"] = $row;//customer table
                                     $_SESSION["first_name"] = $row['first_name']; 
-                               
+                                    
+
                                     // Redirect the user to welcome page
                                     header("location:myProPerty_welcome.php");
                                     exit;
                                 }
                                 else {
-                                    $error = '<p class="error">The password you have enter is invalid.</p>';
+                                   // $error = '<p class="error">The password you have enter is invalid.</p>';
+                        
                                 }
                         }//checking num rows
                             else{ 
@@ -88,7 +102,7 @@ require_once('adverts.php');
                         }//if error is empty
 
 
-                        else if (empty($error) && $user_type == 'landlords'){
+                         if (empty($error) && $user_type == 'landlords'){
                             //searching by the email to compare password of customer of myProPerty
                         $query = $db_connection->prepare("SELECT * FROM landlords WHERE email = ?");
                         // Bind parameters (s = string, i = int),  string so use "s"
@@ -108,6 +122,7 @@ require_once('adverts.php');
                             //Verify the given input with data from database::::::
                                 // verify the password
                                 if (password_verify($password, $row['password'])) {
+                                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                                     $_SESSION["userID"] = $row['userID'];
                                     $_SESSION["landlord"] = $row;//customer table
                                     $_SESSION["first_name"] = $row['first_name']; 
@@ -127,6 +142,47 @@ require_once('adverts.php');
                             $query->close();
 
                         }
+
+                        // ADMIN
+                        if (empty($error) && $user_type == 'admin'){
+                            //searching by the email to compare password of customer of myProPerty
+                        $query = $db_connection->prepare("SELECT * FROM admin WHERE email = ?");
+                        // Bind parameters (s = string, i = int),  string so use "s"
+                        $query->bind_param("s", $email);
+                        $query->execute();
+                        // Store the result to check if account exists in the database.
+                        $result = $query->get_result();
+                        // $result = $conn->query($sql); (ignore).
+
+
+                        //check for user in database::::
+
+                        if ($result->num_rows > 0) { //check for data row
+                            //fetching the data from myProPerty database
+                            $row = $result->fetch_assoc();
+
+                            //Verify the given input with data from database::::::
+                                // verify the password
+                                if (password_verify($password, $row['password'])) {
+                                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                                    $_SESSION["userID"] = $row['userID'];
+                                    $_SESSION["admin"] = $row;// table
+                                    $_SESSION["first_name"] = $row['first_name']; 
+                               
+                                    // Redirect the user to welcome page
+                                    header("location:myProPerty_welcome.php");
+                                    exit;
+                                }
+                                else {
+                                    $error = '<p class="error">The password you have enter is invalid.</p>';
+                                }
+                         }//checking num rows
+                            else{ 
+                                $error = '<p class="error">No User exist with that email address.</p>';
+                            }//else
+                            //close query statement.
+                            $query->close();
+                        }
                         // Close connection
                         mysqli_close($db_connection);
 
@@ -139,6 +195,13 @@ require_once('adverts.php');
             function display_login_error($error){
                 echo '<div class="alert alert-danger">' . $error . '</div>';
             }
+
+            // function change_paas_error($error){
+            //     <p><a href="myProPerty_view_email.php">Email</a></p>
+            // //    header("location:myProPerty_forgot_pass.php");
+            //     exit;
+            // }
+
             
     ?>
     <!-- HTML FORM -->
@@ -177,7 +240,23 @@ require_once('adverts.php');
                                 I am a landlords
                             </label>
                         </div>
-                    <button type="submit" class="mt-3 btn btn-primary" name="login">Login</button>
+                        <!-- admin -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="user_type" id="admin"
+                            value = "admin">
+                            <label class="form-check-label" for="admin">
+                                I am an admin
+                            </label>
+                        </div>
+                        
+                    <!-- Login Button -->
+                    <div class="form-group mt-3">
+                    <button type="submit" class=" btn btn-primary" name="login">Login
+                        
+                    </button>
+            </div>
+                    <!-- <button type="submit" class="mt-3 btn btn-primary" name="login">Login</button> -->
+                    
                     <!-- Link to registeration page -->
                     <p>Don't have an account? <a href="myProPerty_registration_form.php">Register here</a>.</p>
                 </form>
@@ -193,6 +272,7 @@ require_once('adverts.php');
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<?php require_once('footer.php'); ?>
 </body>
 
 </html>

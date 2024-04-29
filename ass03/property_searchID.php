@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['search'])) {
                                 </tr>
                                 <tr>
                                     <th scope='col'>Description</th>
-                                    <td scope='row'><?php echo $property['desc']; ?></td>
+                                    <td scope='row'><?php echo $property['description']; ?></td>
                                 </tr>
                                 <tr>
                                     <th scope='col'>Title</th>

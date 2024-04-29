@@ -12,13 +12,21 @@
   <body>
 
   <?php
-   //basic cnnection for now: 
-    // require 'mySql_databaseConnection.php';
-    require_once('myProPerty_session.php');
-    require_once('myProPerty_header.php');
-    require_once('adverts.php');
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASSWORD', '');
+define('DB_DATABASE', 's3105875');
 
-   
+// Establish a new database connection
+$db_connection = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
+
+// Check connection
+if ($db_connection->connect_error) {
+    die("Database connection failed: " . $db_connection->connect_error);
+}
+    require_once ("myProPerty_session.php");
+    require_once ('myProPerty_header.php');
+
    
  // REGISTRATION PHP HANDLER::::
     
@@ -150,7 +158,7 @@
         }//if user_type = tenents
         
         //if the user_type is a landlords.
-        else if ($user_type == 'landlords'){
+        if ($user_type == 'landlords'){
 
             //mysql prepare statement
             $query = $db_connection->prepare("SELECT * FROM landlords WHERE email = ?");
@@ -210,8 +218,72 @@
             }
 
         }//if user_type = landlord.
+
+        //if the user_type is an ADMIN:::::::::::::
+        if ($user_type == 'admin'){
+
+            //mysql prepare statement
+            $query = $db_connection->prepare("SELECT * FROM admin WHERE email = ?");
+            // Bind parameters (s = string, i = int), username is a string so use "s"
+            $query->bind_param('s', $email);
+            $query->execute();
+            // Store the result to check if account exists in the database.
+            $query->store_result();
+
+
+
+            if ($query->num_rows > 0) { //if data of row is >0 (data exists in database)
+                $error .= '<p class="error">The email address is already registered!</p>';
+            }
+            else{
+
+                // we validate password: MOVE THESE STATEMENT UP to isset 
+
+
+                if (strlen($password ) < 6) {
+                    $error .= '<p class="error">Please enter a password that is atleast 6 characters.</p>';
+                }
+
+                // Validate confirm password
+                if (empty($confirm_pass)) {
+                    $error .= '<p class="error">Please enter confirm password.</p>';
+                } 
+                else {
+                    if (($password != $confirm_pass)) {
+                        $error .= '<p class="error">Password did not match.</p>';
+                    }
+                }
+
+                 
+                //if there'sno errors::
+                if (empty($error) ) {
+
+                    if($user_type == 'admin'){
+
+                     //we insert new input data in the database:
+                    $insertQuery = $db_connection->prepare("INSERT INTO admin (first_name, last_name, email, mobile, password) VALUES (?, ?, ?, ?, ?);");
+                    $insertQuery->bind_param("sssis", $first_name, $last_name, $email, $mobile, $password_hash);
+                    //execute the bind query in result variable:
+                    $result = $insertQuery->execute();
+                    var_dump($result); // for debugging
+                    }
+                    if ($result) {
+                        $success .= '<p class="success">Your registration was successful, please login to continue!</p>';
+                    } 
+                    else {
+                        $error .= '<p class="error">Something went wrong: '.$insertQuery->error.'</p>';
+                    }
+                }//if no error
+
+                $query->close();
+       
+            }
+        }
+
         
-    }
+    }//if empty error else 
+         //always  Close DB connection
+         mysqli_close($db_connection);
   ?>
 
 
@@ -264,11 +336,11 @@
                             <input type="password" id="confirm_pass" name="confirm_pass" value="<?php if(isset($_POST['confirm_pass'])) echo $_POST['confirm_pass']; ?>" class="form-control" required><br>
                         </div>
                        <!-- form check for tenants -->
-                        <div class="form-check">
+                        <div class="form-check mt-3">
                             <input class="form-check-input" type="radio" name="user_type" id="tenants"
                             value = "tenants">
                             <label class="form-check-label" for="tenants">
-                                I am a tenants
+                                I am a tenant
                             </label>
                         </div>
                         <!-- form check for landlords-->
@@ -276,7 +348,16 @@
                             <input class="form-check-input" type="radio" name="user_type" id="landlords"
                             value = "landlords">
                             <label class="form-check-label" for="landlords">
-                                I am a landlords
+                                I am a landlord
+                            </label>
+                        </div>
+
+                         <!-- form check for admin-->
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="user_type" id="admin"
+                            value = "admin">
+                            <label class="form-check-label" for="admin">
+                                I'm an admiin
                             </label>
                         </div>
 

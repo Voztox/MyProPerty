@@ -14,10 +14,15 @@
 <!-- Advertisement -->
 <div class="advertisement">
     <?php
-    // Array of available ad images
-    $adImages = ['ad1.png', 'ad2.png', 'ad3.png'];
+    // Array of available ad images with their corresponding URLs
+    $adLinks = [
+        'ad1' => 'https://aib.ie/',
+        'ad2' => 'https://www.bankofireland.com/',
+        'ad3' => 'https://www.griffith.ie/'
+    ];
 
     // Randomly select one image
+    $adImages = array_keys($adLinks);
     $randomIndex = array_rand($adImages);
     $selectedImage = $adImages[$randomIndex];
 
@@ -25,9 +30,11 @@
     $adsFolder = '../ads/';
 
     // Check if the selected image exists
-    if (file_exists($adsFolder . $selectedImage)) {
-        // Output the image
-        echo "<img src='$adsFolder$selectedImage' alt='Advertisement' width='200' height='300'>";
+    if (isset($adLinks[$selectedImage]) && file_exists($adsFolder . $selectedImage . '.png')) {
+        // Output the image wrapped in an anchor tag with the corresponding URL
+        echo "<a href='{$adLinks[$selectedImage]}' target='_blank'>";
+        echo "<img src='{$adsFolder}{$selectedImage}.png' alt='Advertisement' width='200' height='300'>";
+        echo "</a>";
     } else {
         echo 'No ad available.';
     }
@@ -51,7 +58,6 @@ if ($conn->connect_error) {
 
 // Include necessary files
 require_once('myProPerty_session.php');
-require_once('myProPerty_header.php');
 ?>
 
 <!-- Link to external JavaScript file -->

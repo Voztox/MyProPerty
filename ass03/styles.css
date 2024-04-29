@@ -3,8 +3,8 @@
 /* Positioning the advertisement */
 .advertisement {
     position: fixed; /* Fixed position to keep it in view */
-    top: 50%; /* Adjust top position */
-    right: 20px; /* Adjust right position */
+    top: 40%; /* Adjust top position */
+    left: 20px; /* Adjust right position */
     transform: translateY(-50%); /* Center vertically */
     z-index: 1000; /* Ensure it's above other content */
 }
@@ -13,4 +13,30 @@
 .advertisement img {
     width: 200px; /* Adjust width as needed */
     height: auto; /* Maintain aspect ratio */
+}
+.btn-search {
+    width: 250px; /* Set the width of the buttons */
+    height: 250px; /* Set the height of the buttons */
+    margin: auto; /* Center the buttons horizontally */
+    display: block; /* Ensure the buttons are displayed as block elements */
+    border-radius: 0; /* Remove border radius to make the buttons square */
+    line-height: 200px; /* Center the text vertically within the buttons */
+}
+
+/* Ensure that the footer remains at the bottom of the page */
+html, body {
+    height: 100%;
+}
+
+.footer {
+    width: 100%;
+    height: 20%; /* Adjust height as needed */
+}
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.wrapper {
+    flex: 1;
 }
